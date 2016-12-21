@@ -1,5 +1,18 @@
-body{background:#fff;width:100%}
-ul.err-area li{color:red}
-.data-table{float:left;display:inline-block}
-.data-table table{border-collapse:collapse;border:1px solid #ddd;}
-.page-data{float:left;display:inline-block;}
+body{
+  background:#fff;
+  width:100%;
+}
+ul.err-area li{
+  color:red;
+}
+.data-table{
+  padding:2%;
+}
+.data-table table{
+  border-collapse:collapse;
+  border:1px solid #ddd;
+  border-radius:2px;
+}
+.page-data{
+  padding:2%;
+}

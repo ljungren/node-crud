@@ -23,7 +23,8 @@ app.use(
     connection(mysql,{
         host     : 'localhost',
         user     : 'root',
-        password : '',
+        password : 'root',
+        port : 3306, //port mysql
         database : 'test',
         debug    : false //set true if you wanna see debug logger
     },'request')
