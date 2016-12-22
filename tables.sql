@@ -47,31 +47,3 @@ INSERT INTO `users` (`user_id`, `name`, `email`, `password`) VALUES
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
-
-
-
-
-
-
-CREATE TABLE IF NOT EXISTS `students` (
-  `student_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  PRIMARY KEY (`student_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
-
---
--- Dumping data for table `t_user`
---
-
-INSERT INTO `students` (`student_id`, `name`, `email`) VALUES
-(1, 'Joakim Ljungren', 'joakim@ljungren.se'),
-(2, 'John Doe', 'joahndoe@gmail.com'),
-(4, 'Jane DOe', 'janedoe@gmail.com'),
-(5, 'Tarzan', 'tarzan@gmail.com');
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

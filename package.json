@@ -1,6 +1,6 @@
 {
-  "name": "rest-crud",
-  "description": "REST CRUD Example Node.js & Mysql",
+  "name": "afi-lab1",
+  "description": "REST CRUD interface",
   "version": "0.0.1",
   "private": true,
   "main": "server.js",

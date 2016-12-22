@@ -9,10 +9,10 @@
 <div class="data-table">
     <table border="1" cellpadding="7" cellspacing="7">
         <tr>
-            <th width="50px">Id</th>
+            <th width="50px">Nr</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Password</th>
+            <th>Program</th>
             <th></th>
         </tr>
                        
@@ -24,11 +24,11 @@
             <td><%=(i+1)%></td>
             <td><%=data[i].name%></td>
             <td><%=data[i].email%></td>
-            <td><%=data[i].password%></td>
+            <td><%=data[i].program_name%></td>
             <td>
-                <a class="a-inside edit" href="/api/user/<%=data[i].user_id%>">Edit</a>
+                <a class="a-inside edit" href="/api/student/<%=data[i].student_id%>">Edit</a>
                
-                <a class="a-inside delete" href="javascript:void(0)" onClick="deleteUser(<%=data[i].user_id%>)">Delete</a>
+                <a class="a-inside delete" href="javascript:void(0)" onClick="deleteStudent(<%=data[i].student_id%>)">Delete</a>
                
             </td>
         </tr>
@@ -53,12 +53,18 @@
             <td class="label">Email</td><td>: <input type="text" name="email"></td>
          </tr>
           <tr>
-            <td class="label">Password</td><td>: <input type="password" name="password"></td>
+            <td class="label">Program</td><td>: 
+                <select name="program_name">
+                  <option value="ID">ID</option>
+                  <option value="CS">CS</option>
+                  <option value="IE">IE</option>
+                </select>
+            </td>
          </tr>
          <tr>
             <td class="label"></td>
             <td>
-                &nbsp; <input type="button" value="Save" onClick="saveUser()">
+                &nbsp; <input type="button" value="Save" onClick="saveStudent()">
             </td>
          </tr>
         </table>
@@ -70,11 +76,11 @@
 
 <script>
 
-    function saveUser(){
+    function saveStudent(){
        
        $.ajax({
         
-        url:"/api/user",
+        url:"/api/student",
         type:"post",
         data:$("#the-form").serialize(),
         success:function(res){
@@ -97,10 +103,10 @@
        });
     }
     
-    function deleteUser(user_id){
+    function deleteStudent(student_id){
     
         $.ajax({
-            url:"/api/user/"+user_id,
+            url:"/api/student/"+student_id,
             type: 'DELETE',
             success: function(res) {
                 

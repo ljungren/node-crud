@@ -25,14 +25,15 @@ app.use(
         user     : 'root',
         password : 'root',
         port : 3306, //port mysql
-        database : 'test',
+        database : 'university',
         debug    : false //set true if you wanna see debug logger
     },'request')
 
 );
 
 app.get('/',function(req,res){
-    res.send('Welcome');
+    //res.send('Go to /api/student');
+    window.location.href = '/api/student';
 });
 
 
@@ -52,38 +53,37 @@ router.use(function(req, res, next) {
     next();
 });
 
-var curut = router.route('/user');
+var api = router.route('/student');
 
 
 //show the CRUD interface | GET
-curut.get(function(req,res,next){
+api.get(function(req,res,next){
 
 
     req.getConnection(function(err,conn){
 
         if (err) return next("Cannot Connect");
 
-        var query = conn.query('SELECT * FROM t_user',function(err,rows){
+        var query = conn.query("SELECT s.student_id, s.name, s.email, p.program_name " + 
+            "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id",function(err,rows){
 
             if(err){
                 console.log(err);
                 return next("Mysql error, check your query");
             }
 
-            res.render('user',{title:"RESTful Crud Example",data:rows});
+            res.render('student',{title:"University",data:rows});
 
-         });
-
+        });
     });
 
 });
 //post data to DB | POST
-curut.post(function(req,res,next){
+api.post(function(req,res,next){
 
     //validation
     req.assert('name','Name is required').notEmpty();
     req.assert('email','A valid email is required').isEmail();
-    req.assert('password','Enter a password 6 - 20').len(6,20);
 
     var errors = req.validationErrors();
     if(errors){
@@ -95,7 +95,7 @@ curut.post(function(req,res,next){
     var data = {
         name:req.body.name,
         email:req.body.email,
-        password:req.body.password
+        program_name:req.body.program_name
      };
 
     //inserting into mysql
@@ -103,7 +103,9 @@ curut.post(function(req,res,next){
 
         if (err) return next("Cannot Connect");
 
-        var query = conn.query("INSERT INTO t_user set ? ",data, function(err, rows){
+        var query = conn.query("INSERT INTO students (name, email, program_id) " +
+            "SELECT '" + data.name + "', '" + data.email + "', program_id FROM programs " + 
+            "WHERE program_name='" + data.program_name + "';", function(err, rows){
 
            if(err){
                 console.log(err);
@@ -120,42 +122,44 @@ curut.post(function(req,res,next){
 
 
 //now for Single route (GET,DELETE,PUT)
-var curut2 = router.route('/user/:user_id');
+var api2 = router.route('/student/:student_id');
 
 /*------------------------------------------------------
 route.all is extremely useful. you can use it to do
 stuffs for specific routes. for example you need to do
 a validation everytime route /api/user/:user_id it hit.
 
-remove curut2.all() if you dont want it
+remove api2.all() if you dont want it
 ------------------------------------------------------*/
-curut2.all(function(req,res,next){
-    console.log("You need to smth about curut2 Route ? Do it here");
+api2.all(function(req,res,next){
+    //console.log("You need to smth about api2 Route ? Do it here");
     console.log(req.params);
     next();
 });
 
 //get data to update
-curut2.get(function(req,res,next){
+api2.get(function(req,res,next){
 
-    var user_id = req.params.user_id;
+    var student_id = req.params.student_id;
 
     req.getConnection(function(err,conn){
 
         if (err) return next("Cannot Connect");
 
-        var query = conn.query("SELECT * FROM t_user WHERE user_id = ? ",[user_id],function(err,rows){
+        var query = conn.query("SELECT s.student_id, s.name, s.email, p.program_name " + 
+            "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id " + 
+            "WHERE student_id = " + student_id + ";", function(err,rows){
 
             if(err){
                 console.log(err);
                 return next("Mysql error, check your query");
             }
 
-            //if user not found
+            //if student not found
             if(rows.length < 1)
                 return res.send("User Not found");
 
-            res.render('edit',{title:"Edit user",data:rows});
+            res.render('edit',{title:"Edit student",data:rows});
         });
 
     });
@@ -163,13 +167,12 @@ curut2.get(function(req,res,next){
 });
 
 //update data
-curut2.put(function(req,res,next){
-    var user_id = req.params.user_id;
+api2.put(function(req,res,next){
+    var student_id = req.params.student_id;
 
     //validation
     req.assert('name','Name is required').notEmpty();
     req.assert('email','A valid email is required').isEmail();
-    req.assert('password','Enter a password 6 - 20').len(6,20);
 
     var errors = req.validationErrors();
     if(errors){
@@ -181,7 +184,7 @@ curut2.put(function(req,res,next){
     var data = {
         name:req.body.name,
         email:req.body.email,
-        password:req.body.password
+        program_name:req.body.program_name
      };
 
     //inserting into mysql
@@ -189,31 +192,46 @@ curut2.put(function(req,res,next){
 
         if (err) return next("Cannot Connect");
 
-        var query = conn.query("UPDATE t_user set ? WHERE user_id = ? ",[data,user_id], function(err, rows){
+        //save id for update
+        var program_id;
+        var query = conn.query("SELECT program_id FROM programs WHERE program_name='" + data.program_name + "';", function(err,rows){
 
-           if(err){
+            if(err){
                 console.log(err);
                 return next("Mysql error, check your query");
-           }
+            } else{
+                program_id = rows[0].program_id;
+                //console.log(program_id);
 
-          res.sendStatus(200);
+                //do update on callback
+                var query = conn.query("UPDATE students s INNER JOIN programs p ON s.program_id = p.program_id " + 
+                    "SET s.name = '" + data.name + "', s.email = '" + data.email + "', s.program_id = '" + program_id + "' " +
+                    "WHERE s.student_id = " + student_id + ";", function(err,rows){
 
+                    if(err){
+                        console.log(err);
+                        return next("Mysql error, check your query");
+                    }
+
+                  res.sendStatus(200);
+
+                });
+            }
         });
-
-     });
+    });
 
 });
 
 //delete data
-curut2.delete(function(req,res,next){
+api2.delete(function(req,res,next){
 
-    var user_id = req.params.user_id;
+    var student_id = req.params.student_id;
 
      req.getConnection(function (err, conn) {
 
         if (err) return next("Cannot Connect");
 
-        var query = conn.query("DELETE FROM t_user  WHERE user_id = ? ",[user_id], function(err, rows){
+        var query = conn.query("DELETE FROM students WHERE student_id = ? ",[student_id], function(err, rows){
 
              if(err){
                 console.log(err);

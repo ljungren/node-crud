@@ -15,28 +15,34 @@
         <td class="label">Email</td><td>: <input type="text" name="email" value="<%=data[0].email%>"></td>
      </tr>
       <tr>
-        <td class="label">Password</td><td>: <input type="password" name="password" value="<%=data[0].password%>"></td>
+        <td class="label">Program</td><td>: 
+          <select name="program_name" value="<%=data[0].program_name%>">
+            <option value="ID">ID</option>
+            <option value="CS">CS</option>
+            <option value="IE">IE</option>
+          </select>
+        </td>
      </tr>
      <tr>
         <td class="label"></td>
         <td>
-            &nbsp; <input type="button" value="Save" onClick="saveUser()">
+            &nbsp; <input type="button" value="Save" onClick="saveStudent()">
         </td>
      </tr>
     </table>
 </form>
  <script>
     
-        function saveUser(){
+        function saveStudent(){
            
            $.ajax({
             
-            url:"/api/user/"+<%=data[0].user_id%>,
+            url:"/api/student/"+<%=data[0].student_id%>,
             type:"put",
             data:$("#the-form").serialize(),
             success:function(res){
                 
-                window.location.href = '/api/user';
+                window.location.href = '/api/student';
                 return false;
             },
             error:function(xhr, status, error){
