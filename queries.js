@@ -4,8 +4,8 @@ var query = conn.query("SELECT s.name, s.email, p.program_name " +
 
 //get some 
 var query = conn.query("SELECT s.name, s.email, p.program_name " + 
-            "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id" +
-            "WHERE p.program_name= + " data.filter + ";",function(err,rows){
+        "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id " +
+        "WHERE p.program_name='" + filter + "';",function(err,rows){
 
 //post
 var query = conn.query("INSERT INTO students (name, email, program_id) " +

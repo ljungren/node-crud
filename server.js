@@ -57,39 +57,21 @@ var api = router.route('/student/');
 //show the CRUD interface | GET
 api.get(function(req,res,next){
 
-    // var filter = req.params.filter;
-
     req.getConnection(function(err,conn){
 
         if (err) return next("Cannot Connect");
 
-        // if(filter==='All'){
-            var query = conn.query("SELECT s.student_id, s.name, s.email, p.program_name " + 
-                "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id",function(err,rows){
+        var query = conn.query("SELECT s.student_id, s.name, s.email, p.program_name " + 
+            "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id",function(err,rows){
 
-                if(err){
-                    console.log(err);
-                    return next("Mysql error, check your query");
-                }
+            if(err){
+                console.log(err);
+                return next("Mysql error, check your query");
+            }
 
-                res.render('student',{title:"University",data:rows});
+            res.render('student',{title:"University",data:rows});
 
-            });
-        // }
-        // else{
-        //     var query = conn.query("SELECT s.name, s.email, p.program_name " + 
-        //     "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id " +
-        //     "WHERE p.program_name=" + filter + ";",function(err,rows){
-
-        //         if(err){
-        //             console.log(err);
-        //             return next("Mysql error, check your query");
-        //         }
-
-        //         res.render('student',{title:"University",data:rows});
-
-        //     });
-        // }
+        });
     });
 
 });
@@ -154,33 +136,16 @@ api3.get(function(req,res,next){
 
         if (err) return next("Cannot Connect");
 
-        if(filter==='All'){
-            var query = conn.query("SELECT s.student_id, s.name, s.email, p.program_name " + 
-                "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id",function(err,rows){
+        var query = conn.query("CALL sp_filter('" + filter + "');",function(err,rows){
 
-                if(err){
-                    console.log(err);
-                    return next("Mysql error, check your query");
-                }
+            if(err){
+                console.log(err);
+                return next("Mysql error, check your query");
+            }
+            // console.log(rows[0]);
+            res.render('student',{title:"University",data:rows[0], filter:filter});
 
-                res.render('student',{title:"University",data:rows});
-
-            });
-        }
-        else{
-            var query = conn.query("SELECT s.name, s.email, p.program_name " + 
-            "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id " +
-            "WHERE p.program_name='" + filter + "';",function(err,rows){
-
-                if(err){
-                    console.log(err);
-                    return next("Mysql error, check your query");
-                }
-
-                res.render('student',{title:"University",data:rows, filter:filter});
-
-            });
-        }
+        });
     });
 
 });
