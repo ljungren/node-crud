@@ -6,6 +6,17 @@
         <link rel="stylesheet" href="/../css/style.css">
     </head>
 <body>
+
+    <div class="filter">
+        Filter: 
+        <select id="filter" name="prog">
+            <option value="All">All</option>
+            <option value="ID">ID</option>
+            <option value="CS">CS</option>
+            <option value="IE">IE</option>
+        </select>
+    </div>
+
 <div class="data-table">
     <table border="1" cellpadding="7" cellspacing="7">
         <tr>
@@ -18,27 +29,29 @@
                        
         <% if(data.length){ 
                         
-         for(var i = 0;i < data.length;i++) { %>
+            for(var i = 0;i < data.length;i++) { %>
          
-        <tr>
-            <td><%=(i+1)%></td>
-            <td><%=data[i].name%></td>
-            <td><%=data[i].email%></td>
-            <td><%=data[i].program_name%></td>
-            <td>
-                <a class="a-inside edit" href="/api/student/<%=data[i].student_id%>">Edit</a>
-               
-                <a class="a-inside delete" href="javascript:void(0)" onClick="deleteStudent(<%=data[i].student_id%>)">Delete</a>
-               
-            </td>
-        </tr>
-    <% }
-    
-     }else{ %>
+                <tr>
+                    <td><%=(i+1)%></td>
+                    <td><%=data[i].name%></td>
+                    <td><%=data[i].email%></td>
+                    <td><%=data[i].program_name%></td>
+                    <td>
+                        <a class="a-inside edit" href="/api/student/<%=data[i].student_id%>">Edit</a>
+                       
+                        <a class="a-inside delete" href="javascript:void(0)" onClick="deleteStudent(<%=data[i].student_id%>)">Delete</a>
+                       
+                    </td>
+                </tr>
+
+            <% }
+        }else{ %>
+
          <tr>
             <td colspan="5">No Data</td>
          </tr>
-    <% } %>
+
+        <% } %>
                                       
     </table>
 </div>
@@ -75,6 +88,20 @@
 </div>
 
 <script>
+
+    $('#filter').val(filter);
+
+    $('#filter').on('change', function() {
+        console.log('filter changed to: ' + this.value);
+        var filterChanged = this.value;
+        if(filterChanged==='All'){
+            window.location.href = '/api/student/';
+        }
+        else{
+            window.location.href = '/api/student/filter/' + filterChanged;;
+            return false;
+        }
+    });
 
     function saveStudent(){
        

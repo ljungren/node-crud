@@ -5,6 +5,9 @@ body{
 ul.err-area li{
   color:red;
 }
+.filter{
+  padding: 2%;
+}
 .data-table{
   padding:2%;
 }

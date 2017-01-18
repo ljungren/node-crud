@@ -32,8 +32,7 @@ app.use(
 );
 
 app.get('/',function(req,res){
-    //res.send('Go to /api/student');
-    window.location.href = '/api/student';
+    res.send('Go to <a href="/api/student">/api/student</a>');
 });
 
 
@@ -53,31 +52,48 @@ router.use(function(req, res, next) {
     next();
 });
 
-var api = router.route('/student');
-
+var api = router.route('/student/');
 
 //show the CRUD interface | GET
 api.get(function(req,res,next){
 
+    // var filter = req.params.filter;
 
     req.getConnection(function(err,conn){
 
         if (err) return next("Cannot Connect");
 
-        var query = conn.query("SELECT s.student_id, s.name, s.email, p.program_name " + 
-            "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id",function(err,rows){
+        // if(filter==='All'){
+            var query = conn.query("SELECT s.student_id, s.name, s.email, p.program_name " + 
+                "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id",function(err,rows){
 
-            if(err){
-                console.log(err);
-                return next("Mysql error, check your query");
-            }
+                if(err){
+                    console.log(err);
+                    return next("Mysql error, check your query");
+                }
 
-            res.render('student',{title:"University",data:rows});
+                res.render('student',{title:"University",data:rows});
 
-        });
+            });
+        // }
+        // else{
+        //     var query = conn.query("SELECT s.name, s.email, p.program_name " + 
+        //     "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id " +
+        //     "WHERE p.program_name=" + filter + ";",function(err,rows){
+
+        //         if(err){
+        //             console.log(err);
+        //             return next("Mysql error, check your query");
+        //         }
+
+        //         res.render('student',{title:"University",data:rows});
+
+        //     });
+        // }
     });
 
 });
+
 //post data to DB | POST
 api.post(function(req,res,next){
 
@@ -96,7 +112,7 @@ api.post(function(req,res,next){
         name:req.body.name,
         email:req.body.email,
         program_name:req.body.program_name
-     };
+    };
 
     //inserting into mysql
     req.getConnection(function (err, conn){
@@ -120,6 +136,54 @@ api.post(function(req,res,next){
 
 });
 
+//filter data
+var api3 = router.route('/student/filter/:filter');
+
+api3.all(function(req,res,next){
+    //console.log("You need to smth about api2 Route ? Do it here");
+    console.log(req.params);
+    next();
+});
+
+//show the CRUD interface | GET
+api3.get(function(req,res,next){
+
+    var filter = req.params.filter;
+
+    req.getConnection(function(err,conn){
+
+        if (err) return next("Cannot Connect");
+
+        if(filter==='All'){
+            var query = conn.query("SELECT s.student_id, s.name, s.email, p.program_name " + 
+                "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id",function(err,rows){
+
+                if(err){
+                    console.log(err);
+                    return next("Mysql error, check your query");
+                }
+
+                res.render('student',{title:"University",data:rows});
+
+            });
+        }
+        else{
+            var query = conn.query("SELECT s.name, s.email, p.program_name " + 
+            "FROM students AS s INNER JOIN programs AS p ON s.program_id=p.program_id " +
+            "WHERE p.program_name='" + filter + "';",function(err,rows){
+
+                if(err){
+                    console.log(err);
+                    return next("Mysql error, check your query");
+                }
+
+                res.render('student',{title:"University",data:rows, filter:filter});
+
+            });
+        }
+    });
+
+});
 
 //now for Single route (GET,DELETE,PUT)
 var api2 = router.route('/student/:student_id');
@@ -137,7 +201,7 @@ api2.all(function(req,res,next){
     next();
 });
 
-//get data to update
+//get data to edit
 api2.get(function(req,res,next){
 
     var student_id = req.params.student_id;
