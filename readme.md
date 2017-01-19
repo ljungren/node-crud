@@ -1,4 +1,4 @@
-This is an example of RESTful CRUD in Node.js and mySQL.
+This is an example of RESTful CRUD in Node.js and mySQL. Lists students of programs in a university.
 
 ## Installation
 
@@ -17,4 +17,6 @@ server.js
     
     nodemon server.js
 
-http://localhost:3000/api/student/
+access:
+
+    http://localhost:3000/api/student/
