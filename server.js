@@ -143,7 +143,7 @@ api3.get(function(req,res,next){
                 return next("Mysql error, check your query");
             }
             // console.log(rows[0]);
-            res.render('student',{title:"University",data:rows[0], filter:filter});
+            res.render('student',{title:"University",data:rows[0], filter:filter.filter});
 
         });
     });
@@ -153,13 +153,6 @@ api3.get(function(req,res,next){
 //now for Single route (GET,DELETE,PUT)
 var api2 = router.route('/student/:student_id');
 
-/*------------------------------------------------------
-route.all is extremely useful. you can use it to do
-stuffs for specific routes. for example you need to do
-a validation everytime route /api/user/:user_id it hit.
-
-remove api2.all() if you dont want it
-------------------------------------------------------*/
 api2.all(function(req,res,next){
     //console.log("You need to smth about api2 Route ? Do it here");
     console.log(req.params);
