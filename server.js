@@ -26,7 +26,7 @@ app.use(
         password : 'root',
         port : 3306, //port mysql
         database : 'university',
-        debug    : false //set true if you wanna see debug logger
+        debug    : false
     },'request')
 
 );
@@ -39,14 +39,6 @@ app.get('/',function(req,res){
 //RESTful route
 var router = express.Router();
 
-
-/*------------------------------------------------------
-*  This is router middleware,invoked everytime
-*  we hit url /api and anything after /api
-*  like /api/user , /api/user/7
-*  we can use this for doing validation,authetication
-*  for every route started with /api
---------------------------------------------------------*/
 router.use(function(req, res, next) {
     console.log(req.method, req.url);
     next();
@@ -154,7 +146,6 @@ api3.get(function(req,res,next){
 var api2 = router.route('/student/:student_id');
 
 api2.all(function(req,res,next){
-    //console.log("You need to smth about api2 Route ? Do it here");
     console.log(req.params);
     next();
 });
